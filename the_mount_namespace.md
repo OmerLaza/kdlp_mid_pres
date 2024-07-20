@@ -91,23 +91,14 @@ int ksys_unshare(unsigned long unshare_flags)
 	if (unshare_flags & CLONE_NEWNS)
 		unshare_flags |= CLONE_FS;
 ...
-	err = unshare_fs(unshare_flags, &new_fs);
-	if (err)
-		goto bad_unshare_out;
-...
 	err = unshare_nsproxy_namespaces(unshare_flags, &new_nsproxy,
 					 new_cred, new_fs);
-	if (err)
-		goto bad_unshare_cleanup_cred;
 ...
-
 	if (new_fs || new_fd || do_sysvsem || new_cred || new_nsproxy) {
 ...
-
 		if (new_nsproxy)
 			switch_task_namespaces(current, new_nsproxy);
 ...
-
 	return err;
 }
 ```
@@ -123,26 +114,15 @@ int unshare_nsproxy_namespaces(unsigned long unshare_flags,
 	struct nsproxy **new_nsp, struct cred *new_cred, struct fs_struct *new_fs)
 {
 	struct user_namespace *user_ns;
-	int err = 0;
-
+...
 	if (!(unshare_flags & (CLONE_NEWNS | CLONE_NEWUTS | CLONE_NEWIPC |
 			       CLONE_NEWNET | CLONE_NEWPID | CLONE_NEWCGROUP |
 			       CLONE_NEWTIME)))
 		return 0;
-
-	user_ns = new_cred ? new_cred->user_ns : current_user_ns();
-	if (!ns_capable(user_ns, CAP_SYS_ADMIN))
-		return -EPERM;
-
+...
 	*new_nsp = create_new_namespaces(unshare_flags, current, user_ns,
 					 new_fs ? new_fs : current->fs);
-	if (IS_ERR(*new_nsp)) {
-		err = PTR_ERR(*new_nsp);
-		goto out;
-	}
-
-out:
-	return err;
+...
 }
 ```
 
@@ -164,16 +144,9 @@ static struct nsproxy *create_new_namespaces(unsigned long flags,
 	int err;
 
 	new_nsp = create_nsproxy();
-	if (!new_nsp)
-		return ERR_PTR(-ENOMEM);
-
-	new_nsp->mnt_ns = copy_mnt_ns(flags, tsk->nsproxy->mnt_ns, user_ns, new_fs);
-	if (IS_ERR(new_nsp->mnt_ns)) {
-		err = PTR_ERR(new_nsp->mnt_ns);
-		goto out_ns;
-	}
 ...
-	return ERR_PTR(err);
+	new_nsp->mnt_ns = copy_mnt_ns(flags, tsk->nsproxy->mnt_ns, user_ns, new_fs);
+...
 }
 ```
 
