@@ -1,4 +1,4 @@
-# Linux namespace
+# Linux namespaces
 
 This repo contains the material of our Linux namespaces mid-point presentation.
 
