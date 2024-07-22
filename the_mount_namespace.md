@@ -1,16 +1,11 @@
 # The `mount namespace`
 ## How does `namespace`s work in general
-Each `task_struct` has:
-1. Pointer to `fs_struct`- struct that contains file system information related to the current process 
-1. Pointer to `nsproxy`- struct that contains info about (most of) it's namespaces
+Each `task_struct` hasa pointer to `nsproxy`- struct that contains info about (most of) it's namespaces
 
 
 [include/linux/sched.h](https://elixir.bootlin.com/linux/v6.5.13/source/include/linux/sched.h#L738)
 ```c
 struct task_struct {
-    ...
-    /* Filesystem information: */
-	struct fs_struct		*fs;
     ...
     /* Namespaces: */
 	struct nsproxy			*nsproxy;
