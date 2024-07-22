@@ -4,7 +4,8 @@ This repo contains the material of our Linux namespaces mid-point presentation.
 
 ## Introduction
 
-This project provides an overview and demonstration of Linux namespaces. Linux namespaces are a feature of the Linux kernel that partitions kernel resources so that one set of processes sees one set of resources while another set of processes sees a different set of resources.  
+This project provides an overview and demonstration of Linux namespaces. Linux namespaces are a feature of the Linux kernel that partitions kernel resources so that one set of processes sees one set of resources while another set of processes sees a different set of resources.
+
 We focused the mount namespace which is a feature in the Linux kernel that allows for the isolation of mount points between different sets of processes. This means that changes to the filesystem layout (such as mounting or unmounting filesystems) in one namespace do not affect other namespaces.
 
 ## Table of Contents
